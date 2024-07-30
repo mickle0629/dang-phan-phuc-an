@@ -1,10 +1,10 @@
 import React from 'react';
 
-export function CurrencySelect({currencies}) {
+export function CurrencySelect({name, currencies}) {
   return (
-    <select className='conversion-form__origin-currency-select'>
+    <select className='conversion-form__origin-currency-select' id={name} name={name}>
       {currencies.map(currency => (
-        <option value={currency}>{currency}</option>
+        <option key={currency} value={currency}>{currency}</option>
       ))}
     </select>
   );

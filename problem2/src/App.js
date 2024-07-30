@@ -1,6 +1,8 @@
+import { useState } from "react";
 import "./App.css";
 import { CurrencySelect } from "./lib/components";
 function App() {
+  const [conversionResult, setConversionResult] = useState('');
   const conversions = [
     {
       currency: "BLUR",
@@ -8,7 +10,6 @@ function App() {
       price: 0.20811525423728813,
     },
     { currency: "bNEO", date: "2023-08-29T07:10:50.000Z", price: 7.1282679 },
-    { currency: "BUSD", date: "2023-08-29T07:10:40.000Z", price: 0.999183113 },
     {
       currency: "BUSD",
       date: "2023-08-29T07:10:40.000Z",
@@ -67,7 +68,6 @@ function App() {
     },
     { currency: "KUJI", date: "2023-08-29T07:10:45.000Z", price: 0.675 },
     { currency: "STOSMO", date: "2023-08-29T07:10:45.000Z", price: 0.431318 },
-    { currency: "USDC", date: "2023-08-29T07:10:40.000Z", price: 0.989832 },
     { currency: "axlUSDC", date: "2023-08-29T07:10:40.000Z", price: 0.989832 },
     {
       currency: "ATOM",
@@ -111,8 +111,6 @@ function App() {
       price: 0.004039850455012084,
     },
     { currency: "USC", date: "2023-08-29T07:10:40.000Z", price: 0.994 },
-    { currency: "USDC", date: "2023-08-29T07:10:30.000Z", price: 1 },
-    { currency: "USDC", date: "2023-08-29T07:10:30.000Z", price: 1 },
     {
       currency: "USDC",
       date: "2023-08-29T07:10:40.000Z",
@@ -139,12 +137,27 @@ function App() {
       price: 0.01651813559322034,
     },
   ];
-  const currencies = conversions.map(item => item.currency)
+  // const currencies = conversions.map(item => item.currency)
+  const currencyMap = new Map(conversions.map(conversion => [conversion.currency, conversion.price]));
   
+  function handleSubmit(e) {
+    console.log("currencyMap", currencyMap);
+    e.preventDefault();
+    const formData = new FormData(document.getElementById("currency-converter")); 
+    // console.log("value to be converted", formData);
+    // console.log("formData.get('currency-input')", typeof formData.get('currency-input'))
+    // console.log("result", convertCurrency(formData.get("origin-input"), currencyMap.get(formData.get('currency-input')), currencyMap.get(formData.get('currency-output'))))
+    setConversionResult(convertCurrency(formData.get("origin-input"), currencyMap.get(formData.get('currency-input')), currencyMap.get(formData.get('currency-output'))))
+  }
+
+  function convertCurrency(value, currencyFrom, currencyTo) {
+    return (value * currencyFrom) / currencyTo;
+  }
+
   return (
     <main className="main-container">
       <h1 className="app-title">Currency Conversion</h1>
-      <form className="conversion-form">
+      <form onSubmit={handleSubmit} className="conversion-form" id="currency-converter">
         <div className="conversion-form__origin">
           <label className="conversion-form__origin-label" htmlFor="origin-input">
             Convert from:{" "}
@@ -157,20 +170,22 @@ function App() {
             required
           />
         </div>
-        <CurrencySelect currencies={currencies}/>
+        <CurrencySelect name='currency-input' currencies={[...currencyMap.keys()]}/>
 
         <div className="conversion-form__target">
           <label className="conversion-form__target-label" htmlFor="target-input">
-            Convert to:{" "}
+            Result:{" "}
           </label>
           <input
             className="conversion-form__target-input"
             id="target-input"
             name="target-input"
+            value={conversionResult}
+            readOnly
           ></input>
         </div>
-
-        <button className="conversion-form__submit-btn">Convert</button>
+        <CurrencySelect name='currency-output' currencies={[...currencyMap.keys()]}/>
+        <button type="submit" className="conversion-form__submit-btn">Convert</button>
       </form>
     </main>
   );

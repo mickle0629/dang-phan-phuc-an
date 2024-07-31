@@ -156,36 +156,38 @@ function App() {
 
   return (
     <main className="main-container">
-      <h1 className="app-title">Currency Conversion</h1>
+      <h1 className="app-title">Currency Converter</h1>
       <form onSubmit={handleSubmit} className="conversion-form" id="currency-converter">
-        <div className="conversion-form__origin">
-          <label className="conversion-form__origin-label" htmlFor="origin-input">
+        <div className="conversion-form__interaction-block">
+          <label className="conversion-form__label" htmlFor="origin-input">
             Convert from:{" "}
           </label>
           <input
-            className="conversion-form__origin-input"
+            className="conversion-form__input"
             type="number"
             id="origin-input"
             name="origin-input"
+            placeholder="Enter amount..."
             required
           />
+          <CurrencySelect name='currency-input' currencies={[...currencyMap.keys()]}/>
         </div>
-        <CurrencySelect name='currency-input' currencies={[...currencyMap.keys()]}/>
+        
 
-        <div className="conversion-form__target">
-          <label className="conversion-form__target-label" htmlFor="target-input">
+        <div className="conversion-form__interaction-block">
+          <label className="conversion-form__label" htmlFor="target-input">
             Result:{" "}
           </label>
           <input
-            className="conversion-form__target-input"
+            className="conversion-form__input"
             id="target-input"
             name="target-input"
             value={conversionResult}
             readOnly
-          ></input>
+          />
+          <CurrencySelect name='currency-output' currencies={[...currencyMap.keys()]}/>
         </div>
-        <CurrencySelect name='currency-output' currencies={[...currencyMap.keys()]}/>
-        <button type="submit" className="conversion-form__submit-btn">Convert</button>
+        <button type="submit" className="conversion-form__btn">Convert</button>
       </form>
     </main>
   );

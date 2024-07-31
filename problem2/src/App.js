@@ -1,9 +1,13 @@
 import { useState } from "react";
 import "./App.css";
-import { CurrencySelect } from "./lib/components";
-import Select from 'react-select'
+import Select from "react-select";
 function App() {
-  const [conversionResult, setConversionResult] = useState('');
+  const [conversionResult, setConversionResult] = useState("");
+  const [selectedFromCurrency, setSelectedFromCurrency] = useState(null);
+  const [selectedToCurrency, setSelectedToCurrency] = useState(null);
+  //conversion rate data copy and pasted from provided json file.
+  //file included contained duplicates of same currency name and different rates, so I took the liberty of trimming them manually.
+  //ideally, we would want to pull this json from a server, then run a function that removes the dupes, but for prototyping convenience, this is what I did.
   const conversions = [
     {
       currency: "BLUR",
@@ -138,26 +142,35 @@ function App() {
       price: 0.01651813559322034,
     },
   ];
-  // const currencies = conversions.map(item => item.currency)
-  const currencyMap = new Map(conversions.map(conversion => [conversion.currency, conversion.price]));
-  const [selectedFromCurrency, setSelectedFromCurrency] = useState(null);
-  const [selectedToCurrency, setSelectedToCurrency] = useState(null);
-  function handleSubmit(e) {
-    console.log("currencyMap", currencyMap);
-    e.preventDefault();
-    const formData = new FormData(document.getElementById("currency-converter")); 
-    // console.log("value to be converted", formData);
-    // console.log("formData.get('currency-input')", typeof formData.get('currency-input'))
-    // console.log("result", convertCurrency(formData.get("origin-input"), currencyMap.get(formData.get('currency-input')), currencyMap.get(formData.get('currency-output'))))
-    setConversionResult(convertCurrency(formData.get("origin-input"), currencyMap.get(selectedFromCurrency), currencyMap.get(selectedToCurrency)))
-  }
+  //iterates through conversion data and produce a map with currency-rate pairs. 
+  //this map enables constant-time access when the convertCurrency() function is trying to figure out which currency is in play. 
+  const currencyMap = new Map(
+    conversions.map((conversion) => [conversion.currency, conversion.price])
+  );
   
-  function handleCurrencyFromChange(option) {
-    setSelectedFromCurrency(option.value)
+  //handles submission
+  function handleSubmit(e) {
+    e.preventDefault();
+    //grab form element's results
+    const formData = new FormData(
+      document.getElementById("currency-converter")
+    );
+    //calculate and set conversionResult for display.
+    setConversionResult(
+      convertCurrency(
+        formData.get("origin-input"),
+        currencyMap.get(selectedFromCurrency),
+        currencyMap.get(selectedToCurrency)
+      )
+    );
   }
-  function handleCurrencyToChange(option) {
-    setSelectedToCurrency(option.value)
-  }
+  /**
+   * Performs the conversion from one currency to another.
+   * @param {Number} value the monetary value to be converted
+   * @param {Number} currencyFrom the to-USD exchange rate of value.
+   * @param {Number} currencyTo the to-USD exchange rate of 1 unit of target currency.
+   * @returns the equivalent value of the original value in the target currency.
+   */
   function convertCurrency(value, currencyFrom, currencyTo) {
     return (value * currencyFrom) / currencyTo;
   }
@@ -165,7 +178,11 @@ function App() {
   return (
     <main className="main-container">
       <h1 className="app-title">Currency Converter</h1>
-      <form onSubmit={handleSubmit} className="conversion-form" id="currency-converter">
+      <form
+        onSubmit={handleSubmit}
+        className="conversion-form"
+        id="currency-converter"
+      >
         <div className="conversion-form__interaction-block">
           <label className="conversion-form__label" htmlFor="origin-input">
             Convert from:{" "}
@@ -179,11 +196,14 @@ function App() {
             required
           />
           {/* <CurrencySelect name='currency-input' currencies={[...currencyMap.keys()]} /> */}
-          <Select options={[...currencyMap.keys()].map(currency => {
-            return { value: currency, label: currency }
-          })} onChange={handleCurrencyFromChange}/>
+          <Select
+            options={[...currencyMap.keys()].map((currency) => {
+              return { value: currency, label: currency };
+            })}
+            onChange={option => setSelectedFromCurrency(option.value)}
+            required
+          />
         </div>
-        
 
         <div className="conversion-form__interaction-block">
           <label className="conversion-form__label" htmlFor="target-input">
@@ -193,16 +213,30 @@ function App() {
             className="conversion-form__input"
             id="target-input"
             name="target-input"
+            // I originally wanted to truncate decimals, but it is bad design when the calculation spits out a dozen decimals. 
+            // Since num. of decimals is unpredictable, i decided to just display every decimal.
+            // value={conversionResult.toString().slice(0, conversionResult.toString().indexOf('.') + 3)} 
             value={conversionResult}
             readOnly
           />
           {/* <CurrencySelect name='currency-output' currencies={[...currencyMap.keys()]}/> */}
-          <Select options={[...currencyMap.keys()].map(currency => {
-            return { value: currency, label: currency }
-          })} onChange={handleCurrencyToChange}/>
-          {console.log("selected currencies:", selectedFromCurrency, selectedToCurrency)}
+          {/* Since html <select> is hard to style, this app uses React-select components */}
+          <Select
+            options={[...currencyMap.keys()].map((currency) => {
+              return { value: currency, label: currency };
+            })}
+            onChange={option => setSelectedToCurrency(option.value)}
+            required
+          />
+          {/* {console.log(
+            "selected currencies:",
+            selectedFromCurrency,
+            selectedToCurrency
+          )} */}
         </div>
-        <button type="submit" className="conversion-form__btn">Convert</button>
+        <button type="submit" className="conversion-form__btn">
+          Convert
+        </button>
       </form>
     </main>
   );

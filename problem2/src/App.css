@@ -3,7 +3,7 @@
 }
 
 .main-container {
-  padding: 10%;
+  padding: 20% 10% 10% 10%;
 }
 
 .conversion-form {
@@ -31,12 +31,22 @@
 }
 
 .conversion-form__btn {
-  width: 50%;
+  width: 32.9%;
   height: 30px;
-  border-radius: 10px;
+  border-radius: 5px;
   border: 0;
   color: white;
   background-color: var(--accent-color);
   font-size: 19px;
-  align-self: center;
+  align-self: end;
+}
+
+@media screen and (min-width: 471px) {
+  .main-container {
+    padding: 15% 24% 15% 24%;
+  }
+  .conversion-form__btn {
+    width: 40%;
+    align-self: center;
+  }
 }

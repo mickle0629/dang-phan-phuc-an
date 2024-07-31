@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
+import Select from "react-select"
 
-export function CurrencySelect({ name, currencies }) {
+export function CurrencySelect({ name, currencies, onOptionsChange }) {
+  const [currentOption, setCurrentOption] = useState(null);
+  const options = currencies.map((currency) => {
+    return { value: currency, label: currency }
+  });
+
+  function handleSelectChange(option) {
+    setCurrentOption(option)
+    
+  }
   return (
-    <select className="conversion-form__currency-select" id={name} name={name}>
-      {currencies.map((currency) => {
-        return (
-          <option key={currency} value={currency}>
-            {currency}
-          </option>
-        );
-      })}
-    </select>
+    <Select options={options} onChange={onOptionsChange}/>
   );
 }

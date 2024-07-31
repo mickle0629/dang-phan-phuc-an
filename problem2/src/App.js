@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 import { CurrencySelect } from "./lib/components";
+import Select from 'react-select'
 function App() {
   const [conversionResult, setConversionResult] = useState('');
   const conversions = [
@@ -139,7 +140,8 @@ function App() {
   ];
   // const currencies = conversions.map(item => item.currency)
   const currencyMap = new Map(conversions.map(conversion => [conversion.currency, conversion.price]));
-  
+  const [selectedFromCurrency, setSelectedFromCurrency] = useState(null);
+  const [selectedToCurrency, setSelectedToCurrency] = useState(null);
   function handleSubmit(e) {
     console.log("currencyMap", currencyMap);
     e.preventDefault();
@@ -147,9 +149,15 @@ function App() {
     // console.log("value to be converted", formData);
     // console.log("formData.get('currency-input')", typeof formData.get('currency-input'))
     // console.log("result", convertCurrency(formData.get("origin-input"), currencyMap.get(formData.get('currency-input')), currencyMap.get(formData.get('currency-output'))))
-    setConversionResult(convertCurrency(formData.get("origin-input"), currencyMap.get(formData.get('currency-input')), currencyMap.get(formData.get('currency-output'))))
+    setConversionResult(convertCurrency(formData.get("origin-input"), currencyMap.get(selectedFromCurrency), currencyMap.get(selectedToCurrency)))
   }
-
+  
+  function handleCurrencyFromChange(option) {
+    setSelectedFromCurrency(option.value)
+  }
+  function handleCurrencyToChange(option) {
+    setSelectedToCurrency(option.value)
+  }
   function convertCurrency(value, currencyFrom, currencyTo) {
     return (value * currencyFrom) / currencyTo;
   }
@@ -170,7 +178,10 @@ function App() {
             placeholder="Enter amount..."
             required
           />
-          <CurrencySelect name='currency-input' currencies={[...currencyMap.keys()]}/>
+          {/* <CurrencySelect name='currency-input' currencies={[...currencyMap.keys()]} /> */}
+          <Select options={[...currencyMap.keys()].map(currency => {
+            return { value: currency, label: currency }
+          })} onChange={handleCurrencyFromChange}/>
         </div>
         
 
@@ -185,7 +196,11 @@ function App() {
             value={conversionResult}
             readOnly
           />
-          <CurrencySelect name='currency-output' currencies={[...currencyMap.keys()]}/>
+          {/* <CurrencySelect name='currency-output' currencies={[...currencyMap.keys()]}/> */}
+          <Select options={[...currencyMap.keys()].map(currency => {
+            return { value: currency, label: currency }
+          })} onChange={handleCurrencyToChange}/>
+          {console.log("selected currencies:", selectedFromCurrency, selectedToCurrency)}
         </div>
         <button type="submit" className="conversion-form__btn">Convert</button>
       </form>

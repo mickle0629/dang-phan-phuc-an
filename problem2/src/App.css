@@ -3,7 +3,7 @@
 }
 
 .main-container {
-  padding: 24%;
+  padding: 10%;
 }
 
 .conversion-form {
@@ -14,7 +14,7 @@
 
 .conversion-form__interaction-block {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 0.5fr;
   gap: 5px;
 }
 
@@ -24,9 +24,10 @@
 }
 
 .conversion-form__input {
-  height: 30px;
-  border-radius: 10px;
-  border: 2px solid var(--accent-color)
+  height: 38px;
+  border-radius: 5px;
+  border: 1px solid var(--accent-color);
+  padding: 10px;
 }
 
 .conversion-form__btn {

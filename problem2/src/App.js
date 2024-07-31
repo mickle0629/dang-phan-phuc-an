@@ -142,12 +142,12 @@ function App() {
       price: 0.01651813559322034,
     },
   ];
-  //iterates through conversion data and produce a map with currency-rate pairs. 
-  //this map enables constant-time access when the convertCurrency() function is trying to figure out which currency is in play. 
+  //iterates through conversion data and produce a map with currency-rate pairs.
+  //this map enables constant-time access when the convertCurrency() function is trying to figure out which currency is in play.
   const currencyMap = new Map(
     conversions.map((conversion) => [conversion.currency, conversion.price])
   );
-  
+
   //handles submission
   function handleSubmit(e) {
     e.preventDefault();
@@ -200,7 +200,7 @@ function App() {
             options={[...currencyMap.keys()].map((currency) => {
               return { value: currency, label: currency };
             })}
-            onChange={option => setSelectedFromCurrency(option.value)}
+            onChange={(option) => setSelectedFromCurrency(option.value)}
             required
           />
         </div>
@@ -213,9 +213,9 @@ function App() {
             className="conversion-form__input"
             id="target-input"
             name="target-input"
-            // I originally wanted to truncate decimals, but it is bad design when the calculation spits out a dozen decimals. 
+            // I originally wanted to truncate decimals, but it is bad design when the calculation spits out a dozen decimals.
             // Since num. of decimals is unpredictable, i decided to just display every decimal.
-            // value={conversionResult.toString().slice(0, conversionResult.toString().indexOf('.') + 3)} 
+            // value={conversionResult.toString().slice(0, conversionResult.toString().indexOf('.') + 3)}
             value={conversionResult}
             readOnly
           />
@@ -225,7 +225,7 @@ function App() {
             options={[...currencyMap.keys()].map((currency) => {
               return { value: currency, label: currency };
             })}
-            onChange={option => setSelectedToCurrency(option.value)}
+            onChange={(option) => setSelectedToCurrency(option.value)}
             required
           />
           {/* {console.log(

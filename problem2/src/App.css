@@ -1,5 +1,6 @@
 :root {
-  --accent-color: #00cf26
+  --accent-color: #00cf26;
+  --accent-color-darkened: #0a8220
 }
 
 .main-container {
@@ -39,6 +40,14 @@
   background-color: var(--accent-color);
   font-size: 19px;
   align-self: end;
+}
+
+.conversion-form__btn:hover {
+  background-color: var(--accent-color-darkened);
+}
+
+.conversion-form__btn:active {
+  border: 3px solid black;
 }
 
 @media screen and (min-width: 471px) {

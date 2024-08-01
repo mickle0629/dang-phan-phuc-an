@@ -195,12 +195,16 @@ function App() {
             placeholder="Enter amount..."
             required
           />
-          {/* <CurrencySelect name='currency-input' currencies={[...currencyMap.keys()]} /> */}
+          {/* Since html <select> is hard to style, this app uses React-select components */}
           <Select
+            //react-select components take an options prop that is an object that looks like: { value: "string", label: "string" }
+            //i have to convert the currencyMap to that format.
             options={[...currencyMap.keys()].map((currency) => {
               return { value: currency, label: currency };
             })}
+            //its onChange prop takes a function whose option parameter is an object the same as described above.
             onChange={(option) => setSelectedFromCurrency(option.value)}
+            placeholder='Currency...'
             required
           />
         </div>
@@ -219,20 +223,14 @@ function App() {
             value={conversionResult}
             readOnly
           />
-          {/* <CurrencySelect name='currency-output' currencies={[...currencyMap.keys()]}/> */}
-          {/* Since html <select> is hard to style, this app uses React-select components */}
           <Select
             options={[...currencyMap.keys()].map((currency) => {
               return { value: currency, label: currency };
             })}
             onChange={(option) => setSelectedToCurrency(option.value)}
+            placeholder='Currency...'
             required
           />
-          {/* {console.log(
-            "selected currencies:",
-            selectedFromCurrency,
-            selectedToCurrency
-          )} */}
         </div>
         <button type="submit" className="conversion-form__btn">
           Convert
